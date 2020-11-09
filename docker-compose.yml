@@ -1,0 +1,81 @@
+version: "3"
+services:
+  nginx:
+    build:
+      context: ./services/nginx
+    container_name: l_docker_nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./www:/var/www/html/
+      - ./services/nginx/conf.d:/etc/nginx/conf.d/
+      - ./services/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./logs/nginx:/var/log/nginx/
+    restart: always
+    environment:
+      TZ: "Asia/Shanghai"
+
+  php74:
+    build:
+      context: ./services/php74
+    container_name: l_docker_php74
+    volumes:
+      - ./www:/var/www/html/
+      - ./services/php74/php.ini:/usr/local/etc/php/php.ini
+      - ./services/php74/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ./logs/php74:/var/log/php
+    restart: always
+    environment:
+      TZ: "Asia/Shanghai"
+
+  php56:
+    build:
+      context: ./services/php56
+    container_name: l_docker_php56
+    volumes:
+      - ./www:/var/www/html/
+      - ./services/php56/php.ini:/usr/local/etc/php/php.ini
+      - ./services/php56/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ./logs/php56:/var/log/php
+    restart: always
+    environment:
+      TZ: "Asia/Shanghai"
+
+  mysql57: # 相关文档 https://hub.docker.com/_/mysql
+    container_name: l_docker_mysql57
+    build:
+      context: ./services/mysql
+      args:
+        - MYSQL_VER=5.7
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./services/mysql/my57.cnf:/etc/mysql/my.cnf
+      - ./services/mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./data/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456 # root密码 自行修改
+    restart: always
+
+  redis:
+    build:
+      context: ./services/redis
+    container_name: l_docker_redis
+    ports:
+      - 6379:6379
+    volumes:
+      - ./services/redis/redis.conf:/etc/redis.conf
+      - ./data/redis:/data/
+    environment:
+      TZ: "Asia/Shanghai"
+    entrypoint: [ "redis-server", "/etc/redis.conf" ]
+
+  memcached:
+    container_name: l_docker_memcached
+    image: memcached:1.6-alpine
+    ports:
+      - "11211:11211"
+    environment:
+      TZ: "Asia/Shanghai"
+    restart: always
