@@ -90,10 +90,7 @@ docker-compose up -d
 | --- | --- | --- | --- |
 | bcmath | - | docker-php-ext-install bcmath | docker-php-ext-install bcmath |
 | bz2 | apk add bzip2-dev | docker-php-ext-install bz2 | docker-php-ext-install bz2 |
-| gd | apk add libpng-dev libjpeg-turbo-dev freetype-dev | docker-php-ext-configure gd \
-  --with-freetype --with-jpeg \
-&& docker-php-ext-install  gd | docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-&& docker-php-ext-install gd |
+| gd | apk add libpng-dev libjpeg-turbo-dev freetype-dev | docker-php-ext-configure gd --with-freetype --with-jpeg && docker-php-ext-install  gd | docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-install gd |
 | gettext | apk add gettext-dev | docker-php-ext-install gettext | docker-php-ext-install gettext |
 | mcrypt | apk add libmcrypt-dev | pecl install mcrypt-1.0.3.tgz | docker-php-ext-install mcrypt |
 | memcached | apk add libmemcached-dev zlib-dev | pecl install memcached-3.1.5.tgz | pecl install memcached-2.2.0.tgz |
