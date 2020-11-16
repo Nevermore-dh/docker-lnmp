@@ -4,6 +4,7 @@ services:
     build:
       context: ./services/nginx
     container_name: l_docker_nginx
+    hostname: nginx
     ports:
       - 80:80
       - 443:443
@@ -13,6 +14,9 @@ services:
       - ./services/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./logs/nginx:/var/log/nginx/
     restart: always
+    depends_on:
+      - php56
+      - php74
     environment:
       TZ: "Asia/Shanghai"
 
@@ -20,12 +24,17 @@ services:
     build:
       context: ./services/php74
     container_name: l_docker_php74
+    hostname: php74
     volumes:
       - ./www:/var/www/html/
       - ./services/php74/php.ini:/usr/local/etc/php/php.ini
       - ./services/php74/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf
       - ./logs/php74:/var/log/php
     restart: always
+    depends_on:
+      - mysql57
+      - redis
+      - memcached
     environment:
       TZ: "Asia/Shanghai"
 
@@ -33,17 +42,23 @@ services:
     build:
       context: ./services/php56
     container_name: l_docker_php56
+    hostname: php56
     volumes:
       - ./www:/var/www/html/
       - ./services/php56/php.ini:/usr/local/etc/php/php.ini
       - ./services/php56/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf
       - ./logs/php56:/var/log/php
     restart: always
+    depends_on:
+      - mysql57
+      - redis
+      - memcached
     environment:
       TZ: "Asia/Shanghai"
 
   mysql57: # 相关文档 https://hub.docker.com/_/mysql
     container_name: l_docker_mysql57
+    hostname: mysql57
     build:
       context: ./services/mysql
       args:
@@ -62,6 +77,7 @@ services:
     build:
       context: ./services/redis
     container_name: l_docker_redis
+    hostname: redis
     ports:
       - 6379:6379
     volumes:
@@ -73,6 +89,7 @@ services:
 
   memcached:
     container_name: l_docker_memcached
+    hostname: memcached
     image: memcached:1.6-alpine
     ports:
       - "11211:11211"
